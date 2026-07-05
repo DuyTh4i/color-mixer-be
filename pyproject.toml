@@ -1,0 +1,8 @@
+[project]
+name = "color-mixer-be"
+version = "0.1.0"
+dependencies = [
+    "fastapi[standard]",
+    "supabase",
+    "slowapi"
+]

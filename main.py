@@ -47,6 +47,6 @@ class RequestingRecipes(BaseModel):
 @router.post("/recipes")
 def get_recipes(RequestingRecipes: RequestingRecipes):
     response = supabase.table("colors").select("id, color_name, hex_value, subcollections(product_img)").in_("collection_id", RequestingRecipes.subcollection_ids).execute()
-    return response.data
+    return ""
 
 app.include_router(router, prefix="/api/v1")
