@@ -11,8 +11,11 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
+from fastapi.middleware.cors import CORSMiddleware
+
 load_dotenv()
 
+INTERNAL_API_KEY = os.environ["INTERNAL_API_KEY"]
 
 supabase: Client = create_client(
     os.environ["SUPABASE_URL"],
@@ -33,8 +36,38 @@ app.state.limiter = limiter
 
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"]
+)
+
+
+@app.middleware("http")
+async def verify_api_key(request: Request, call_next):
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
+    if request.url.path.startswith("/api/"):
+        api_key = request.headers.get("X-API-KEY")
+        if api_key != INTERNAL_API_KEY:
+            from fastapi.responses import JSONResponse
+            return JSONResponse(
+                status_code=401,
+                content={"detail": "Invalid request"},
+            )
+    response = await call_next(request)
+    return response
+
 @router.get("/brands")
-@limiter.limit("5/minute")
+# @limiter.limit("5/minute")
 async def get_brands(request: Request):
     response = supabase.table("brands").select("id, name, logo , subcollections(id, name, product_img)").execute()
     return response.data
