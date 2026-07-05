@@ -16,6 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 load_dotenv()
 
 INTERNAL_API_KEY = os.environ["INTERNAL_API_KEY"]
+ALLOW_ORIGIN = os.environ["ALLOW_ORIGIN"]
 
 supabase: Client = create_client(
     os.environ["SUPABASE_URL"],
@@ -37,8 +38,7 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    ALLOW_ORIGIN
 ]
 
 app.add_middleware(
