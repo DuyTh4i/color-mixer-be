@@ -69,7 +69,7 @@ async def verify_api_key(request: Request, call_next):
 @router.get("/brands")
 # @limiter.limit("5/minute")
 async def get_brands(request: Request):
-    response = supabase.table("brands").select("id, name, logo , subcollections(id, name, product_img)").execute()
+    response = supabase.table("brands").select("id, name, logo , subcollections(id, name, product_img, colors(count))").execute()
     return response.data
 
 class RequestingRecipes(BaseModel):
