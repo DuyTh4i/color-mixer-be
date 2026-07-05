@@ -35,7 +35,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @router.get("/brands")
 @limiter.limit("5/minute")
-def get_brands():
+async def get_brands(request: Request):
     response = supabase.table("brands").select("id, name, logo , subcollections(id, name, product_img)").execute()
     return response.data
 
@@ -45,7 +45,7 @@ class RequestingRecipes(BaseModel):
 
 
 @router.post("/recipes")
-def get_recipes(RequestingRecipes: RequestingRecipes):
+async def get_recipes(RequestingRecipes: RequestingRecipes):
     response = supabase.table("colors").select("id, color_name, hex_value, subcollections(product_img)").in_("collection_id", RequestingRecipes.subcollection_ids).execute()
     return ""
 
