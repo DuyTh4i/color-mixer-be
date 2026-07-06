@@ -341,7 +341,7 @@ def find_best_mix(target_hex: str, available_colors: list, exclude_ids: set, sub
 
 @router.post("/recipes")
 @limiter.limit("30/minute")
-async def get_recipes(RequestingRecipes: RequestingRecipes):
+async def get_recipes(request: Request, RequestingRecipes: RequestingRecipes):
     data = list()
     if need_to_cache("recipes", os.environ["CACHE_LIFETIME"]):
         response = supabase.table("colors").select("id, color_name, hex_value, subcollections(id, product_img)").execute()
