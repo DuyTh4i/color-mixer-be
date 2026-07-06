@@ -5,5 +5,9 @@ dependencies = [
     "fastapi[standard]",
     "supabase",
     "slowapi",
+    "numpy",
     "scipy"
 ]
+
+[tool.setuptools]
+py-modules = ["main", "utils"]
