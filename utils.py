@@ -5,11 +5,11 @@ from pathlib import Path
 import numpy as np
 
 def _ensure_cache_dir():
-    Path("./cache").mkdir(parents=True, exist_ok=True)
+    Path("/tmp/cache").mkdir(parents=True, exist_ok=True)
 
 def cache_data(data, filename):
     _ensure_cache_dir()
-    with open('cache/' + str(get_current_timestamp()) + '_' + filename + '.json', 'w') as f:
+    with open('/tmp/cache/' + str(get_current_timestamp()) + '_' + filename + '.json', 'w') as f:
         json.dump(data, f, indent=2)
 
 def get_current_timestamp():
@@ -30,12 +30,12 @@ def need_to_cache(filename, max_age_seconds):
 def get_cached_data(filename):
     filename = get_cached_filename(filename)
     if '.json' in filename:
-        with open('cache/' + filename, 'r') as f:
+        with open('/tmp/cache/' + filename, 'r') as f:
             return json.load(f)
     return ""
 
 def get_cached_filename(filename):
-    folder_path = Path("./cache")
+    folder_path = Path("/tmp/cache")
     if not folder_path.exists():
         return ""
     for f in folder_path.iterdir():
